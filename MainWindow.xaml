@@ -1,0 +1,297 @@
+﻿<Window
+    x:Class="FroniusReader.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helper="clr-namespace:FroniusReader.Helper"
+    xmlns:local="clr-namespace:FroniusReader"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:oxy="http://oxyplot.org/wpf"
+    Title="Fronius Reader"
+    Width="1024"
+    Height="800"
+    mc:Ignorable="d">
+
+    <Window.Resources>
+        <helper:DoubleDivisionConverter x:Key="DoubleDivisionConverter" />
+    </Window.Resources>
+
+    <DockPanel LastChildFill="True">
+        <Grid DockPanel.Dock="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Button
+                Grid.Column="0"
+                Width="150"
+                Height="18"
+                Margin="0,0,8,0"
+                VerticalAlignment="top"
+                Command="{Binding Path=ArchiveViewModel.GetArchiveDataCommand, Mode=OneWay}"
+                Content="GetArchiveData" />
+            <StackPanel Grid.Column="1">
+                <StackPanel Orientation="Horizontal">
+                    <TextBox MinWidth="40" Margin="0,0,8,0">
+                        <TextBox.Text>
+                            <Binding
+                                Mode="TwoWay"
+                                Path="ArchiveViewModel.LastHours"
+                                UpdateSourceTrigger="PropertyChanged">
+                                <Binding.ValidationRules>
+                                    <helper:OnlyNumberValidationRule Max="1000" Min="0" />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                    <TextBlock MinWidth="40">Number of Hours</TextBlock>
+                </StackPanel>
+
+                <Separator />
+                <CheckBox IsChecked="{Binding Path=ArchiveViewModel.GetChannelEnergyRealWACSumProduced, Mode=TwoWay}">Energy AC Produced [Wh]</CheckBox>
+                <CheckBox IsChecked="{Binding Path=ArchiveViewModel.GetChannelEnergyRealWACSumConsumed, Mode=TwoWay}" Visibility="Collapsed">Energy AC Consumed [Wh]</CheckBox>
+                <CheckBox IsChecked="{Binding Path=ArchiveViewModel.GetChannelPowerRealSum, Mode=TwoWay}">Power AC Sum [W]</CheckBox>
+                <Separator />
+
+                <CheckBox IsChecked="{Binding Path=ArchiveViewModel.GetChannelPowerDCString1, Mode=TwoWay}">Power DC String 1 [W]</CheckBox>
+                <CheckBox IsChecked="{Binding Path=ArchiveViewModel.GetChannelPowerDCString2, Mode=TwoWay}">Power DC String 2 [W]</CheckBox>
+                <CheckBox IsChecked="{Binding Path=ArchiveViewModel.GetChannelCurrentDCString1, Mode=TwoWay}">Current String 1 [A]</CheckBox>
+                <CheckBox IsChecked="{Binding Path=ArchiveViewModel.GetChannelCurrentDCString2, Mode=TwoWay}">Current String 2 [A]</CheckBox>
+                <CheckBox IsChecked="{Binding Path=ArchiveViewModel.GetChannelVoltageDCString1, Mode=TwoWay}">Voltage String 1 [V]</CheckBox>
+                <CheckBox IsChecked="{Binding Path=ArchiveViewModel.GetChannelVoltageDCString2, Mode=TwoWay}">Voltage String 2 [V]</CheckBox>
+                <Separator />
+
+                <CheckBox IsChecked="{Binding Path=ArchiveViewModel.GetChannelTemperaturePowerstage, Mode=TwoWay}">Temperature Powerstage [°C]</CheckBox>
+            </StackPanel>
+
+            <Button
+                Grid.Column="2"
+                Width="150"
+                Height="18"
+                Margin="0,0,8,0"
+                VerticalAlignment="top"
+                Command="{Binding Path=InverterViewModel.GetRealtimeDataCommand, Mode=OneWay}"
+                Content="GetInverterRealtimeData" />
+
+            <StackPanel Grid.Column="3">
+
+                <TextBlock></TextBlock>
+                <Separator></Separator>
+                
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock MinWidth="120">Energy Day</TextBlock>
+                    <TextBlock MinWidth="110">
+                        <Run Text="{Binding Path=InverterViewModel.RealTimeData.DayEnergy.Value, Mode=OneWay}" />
+                        <Run Text="{Binding Path=InverterViewModel.RealTimeData.DayEnergy.Unit, Mode=OneWay}" />
+                    </TextBlock>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock MinWidth="120">Energy Total</TextBlock>
+                    <TextBlock MinWidth="110">
+                        <Run Text="{Binding Path=InverterViewModel.RealTimeData.TotalEnergy.Value, Mode=OneWay}" />
+                        <Run Text="{Binding Path=InverterViewModel.RealTimeData.TotalEnergy.Unit, Mode=OneWay}" />
+                    </TextBlock>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock MinWidth="120">Energy Year</TextBlock>
+                    <TextBlock MinWidth="110">
+                        <Run Text="{Binding Path=InverterViewModel.RealTimeData.YearEnergy.Value, Mode=OneWay}" />
+                        <Run Text="{Binding Path=InverterViewModel.RealTimeData.YearEnergy.Unit, Mode=OneWay}" />
+                    </TextBlock>
+                </StackPanel>
+
+                <Separator></Separator>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock MinWidth="120">Power AC</TextBlock>
+                    <TextBlock MinWidth="110">
+                        <Run Text="{Binding Path=InverterViewModel.RealTimeData.PAC.Value, Mode=OneWay}" />
+                        <Run Text="{Binding Path=InverterViewModel.RealTimeData.PAC.Unit, Mode=OneWay}" />
+                    </TextBlock>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock MinWidth="120">Current AC</TextBlock>
+                    <TextBlock MinWidth="110">
+                        <Run Text="{Binding Path=InverterViewModel.RealTimeData.IAC.Value, Mode=OneWay}" />
+                        <Run Text="{Binding Path=InverterViewModel.RealTimeData.IAC.Unit, Mode=OneWay}" />
+                    </TextBlock>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock MinWidth="120">Voltage AC</TextBlock>
+                    <TextBlock MinWidth="110">
+                        <Run Text="{Binding Path=InverterViewModel.RealTimeData.UAC.Value, Mode=OneWay}" />
+                        <Run Text="{Binding Path=InverterViewModel.RealTimeData.UAC.Unit, Mode=OneWay}" />
+                    </TextBlock>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock MinWidth="120">Current DC</TextBlock>
+                    <TextBlock MinWidth="110">
+                        <Run Text="{Binding Path=InverterViewModel.RealTimeData.IDC.Value, Mode=OneWay}" />
+                        <Run Text="{Binding Path=InverterViewModel.RealTimeData.IDC.Unit, Mode=OneWay}" />
+                    </TextBlock>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock MinWidth="120">Voltage DC</TextBlock>
+                    <TextBlock MinWidth="110">
+                        <Run Text="{Binding Path=InverterViewModel.RealTimeData.UDC.Value, Mode=OneWay}" />
+                        <Run Text="{Binding Path=InverterViewModel.RealTimeData.UDC.Unit, Mode=OneWay}" />
+                    </TextBlock>
+                </StackPanel>
+
+                <Separator />
+
+            </StackPanel>
+
+            <Button
+                Grid.Column="4"
+                Width="150"
+                Height="18"
+                Margin="0,0,8,0"
+                VerticalAlignment="top"
+                Command="{Binding Path=SmartMeterViewModel.GetRealtimeDataCommand, Mode=OneWay}"
+                Content="GetMeterRealtimeData" />
+
+            <StackPanel Grid.Column="5">
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock MinWidth="120">Model</TextBlock>
+                    <TextBlock MinWidth="110">
+                        <Run Text="{Binding Path=SmartMeterViewModel.RealTimeData.Details.Model, Mode=OneWay}" />
+                        <Run Text=" " />
+                        <Run Text="{Binding Path=SmartMeterViewModel.RealTimeData.Details.Serial, Mode=OneWay}" />
+                    </TextBlock>
+                </StackPanel>
+
+                <Separator />
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock MinWidth="120">Power AC Sum</TextBlock>
+                    <TextBlock MinWidth="110">
+                        <Run Text="{Binding Path=SmartMeterViewModel.RealTimeData.PowerRealPSum, Mode=OneWay}" />
+                        <Run Text="W" />
+                    </TextBlock>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock MinWidth="120">Energy AC Consumed</TextBlock>
+                    <TextBlock MinWidth="110">
+                        <Run Text="{Binding Path=SmartMeterViewModel.RealTimeData.EnergyRealWACSumConsumed, Mode=OneWay, Converter={StaticResource DoubleDivisionConverter}, ConverterParameter=1000}" />
+                        <Run Text="kW" />
+                    </TextBlock>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock MinWidth="120">Energy AC Produced</TextBlock>
+                    <TextBlock MinWidth="110">
+                        <Run Text="{Binding Path=SmartMeterViewModel.RealTimeData.EnergyRealWACSumProduced, Mode=OneWay, Converter={StaticResource DoubleDivisionConverter}, ConverterParameter=1000}" />
+                        <Run Text="kW" />
+                    </TextBlock>
+                </StackPanel>
+
+                <Separator />
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock MinWidth="120">Power AC L1</TextBlock>
+                    <TextBlock MinWidth="110">
+                        <Run Text="{Binding Path=SmartMeterViewModel.RealTimeData.PowerRealPPhase1, Mode=OneWay}" />
+                        <Run Text="W" />
+                    </TextBlock>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock MinWidth="120">Power AC L2</TextBlock>
+                    <TextBlock MinWidth="110">
+                        <Run Text="{Binding Path=SmartMeterViewModel.RealTimeData.PowerRealPPhase2, Mode=OneWay}" />
+                        <Run Text="W" />
+                    </TextBlock>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock MinWidth="120">Power AC L3</TextBlock>
+                    <TextBlock MinWidth="110">
+                        <Run Text="{Binding Path=SmartMeterViewModel.RealTimeData.PowerRealPPhase3, Mode=OneWay}" />
+                        <Run Text="W" />
+                    </TextBlock>
+                </StackPanel>
+
+                <Separator />
+
+            </StackPanel>
+
+            <StackPanel Grid.Column="6">
+
+                <TextBlock />
+                <Separator />
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock MinWidth="120">Current AC L1</TextBlock>
+                    <TextBlock MinWidth="110">
+                        <Run Text="{Binding Path=SmartMeterViewModel.RealTimeData.CurrentACPhase1, Mode=OneWay}" />
+                        <Run Text="A" />
+                    </TextBlock>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock MinWidth="120">Current AC L2</TextBlock>
+                    <TextBlock MinWidth="110">
+                        <Run Text="{Binding Path=SmartMeterViewModel.RealTimeData.CurrentACPhase2, Mode=OneWay}" />
+                        <Run Text="A" />
+                    </TextBlock>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock MinWidth="120">Current AC L3</TextBlock>
+                    <TextBlock MinWidth="110">
+                        <Run Text="{Binding Path=SmartMeterViewModel.RealTimeData.CurrentACPhase3, Mode=OneWay}" />
+                        <Run Text="A" />
+                    </TextBlock>
+                </StackPanel>
+
+                <Separator />
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock MinWidth="120">Voltage AC L1</TextBlock>
+                    <TextBlock MinWidth="110">
+                        <Run Text="{Binding Path=SmartMeterViewModel.RealTimeData.VoltageACPhase1, Mode=OneWay}" />
+                        <Run Text="V" />
+                    </TextBlock>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock MinWidth="120">Voltage AC L2</TextBlock>
+                    <TextBlock MinWidth="110">
+                        <Run Text="{Binding Path=SmartMeterViewModel.RealTimeData.VoltageACPhase2, Mode=OneWay}" />
+                        <Run Text="V" />
+                    </TextBlock>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock MinWidth="120">Voltage AC L3</TextBlock>
+                    <TextBlock MinWidth="110">
+                        <Run Text="{Binding Path=SmartMeterViewModel.RealTimeData.VoltageACPhase3, Mode=OneWay}" />
+                        <Run Text="V" />
+                    </TextBlock>
+                </StackPanel>
+
+                <Separator />
+
+            </StackPanel>
+
+        </Grid>
+
+        <oxy:PlotView Model="{Binding PlotModel}" />
+    </DockPanel>
+</Window>
