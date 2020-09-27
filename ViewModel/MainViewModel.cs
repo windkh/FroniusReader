@@ -39,6 +39,7 @@ namespace FroniusReader.ViewModel
         };
 
         private DateTimeAxis _timeAxis;
+        private string _address;
 
         #endregion
 
@@ -46,6 +47,10 @@ namespace FroniusReader.ViewModel
 
         public MainViewModel(IFroniusModel froniusModel)
         {
+            _froniusModel = froniusModel;
+            ApiVersion = _froniusModel.Connect("fronius.fritz.box");
+            _address = _froniusModel.Address;
+
             ArchiveViewModel = new ArchiveViewModel(froniusModel);
             ArchiveViewModel.PropertyChanged += ArchiveViewModelPropertyChangedEventHandler;
 
@@ -115,10 +120,48 @@ namespace FroniusReader.ViewModel
 
         #region Properties
 
+        public string Address
+        {
+            get
+            {
+                return _address;
+            }
+
+            set
+            {
+                if (value != _address)
+                {
+                    _address = value;
+                    OnAddressChanged();
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
+        public ApiVersion ApiVersion
+        {
+            get
+            {
+                return _apiVersion;
+            }
+
+            set
+            {
+                if (value != _apiVersion)
+                {
+                    _apiVersion = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         public PlotModel PlotModel
         {
             get;
         }
+
+        private IFroniusModel _froniusModel;
+        private ApiVersion _apiVersion;
 
         public ArchiveViewModel ArchiveViewModel
         {
@@ -138,6 +181,20 @@ namespace FroniusReader.ViewModel
         #endregion
 
         #region Private 
+
+
+        private void OnAddressChanged()
+        {
+            ApiVersion = _froniusModel.Connect(Address);
+            if (ApiVersion != null)
+            {
+                // ok
+            }
+            else
+            {
+                //...
+            }
+        }
 
         private void InitPlotModel()
         {

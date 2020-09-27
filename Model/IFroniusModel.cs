@@ -7,6 +7,10 @@ namespace FroniusReader.Model
 
     public interface IFroniusModel
     {
+        ApiVersion Connect(string address);
+
+        string Address { get; }
+
         Task<SmartMeterRealTimeData> GetSmartMeterRealtimeDataAsync();
 
         Task<InverterRealTimeData> GetInverterRealtimeDataAsync();

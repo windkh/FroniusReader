@@ -16,8 +16,13 @@
         <helper:DoubleDivisionConverter x:Key="DoubleDivisionConverter" />
     </Window.Resources>
 
-    <DockPanel LastChildFill="True">
+    <DockPanel LastChildFill="True"
+               Margin="8">
         <Grid DockPanel.Dock="Top">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
@@ -29,7 +34,30 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
+            <StackPanel
+                Grid.Row="0"
+                Grid.Column="0"
+                Grid.ColumnSpan="8"
+                Orientation="Vertical">
+                <StackPanel
+                    Orientation="Horizontal">
+                    <TextBlock Text="Fronius IP or URL: " />
+                    <helper:SubmitTextBox MinWidth="200" Text="{Binding Path=Address, Mode=TwoWay, UpdateSourceTrigger=Explicit}" />
+
+                    <TextBlock>
+                        <Run Text="   ApiVersion: "></Run>
+                        <Run Text="{Binding Path=ApiVersion.APIVersion, Mode=OneWay}" />
+                        <Run Text="   BaseURL: "></Run>
+                        <Run Text="{Binding Path=ApiVersion.BaseURL, Mode=OneWay}" />
+                        <Run Text="   CompatibilityRange: "></Run>
+                        <Run Text="{Binding Path=ApiVersion.CompatibilityRange, Mode=OneWay}" />
+                    </TextBlock>
+                </StackPanel>
+                <Separator/>
+            </StackPanel>
+
             <Button
+                Grid.Row="1"
                 Grid.Column="0"
                 Width="150"
                 Height="18"
@@ -37,7 +65,8 @@
                 VerticalAlignment="top"
                 Command="{Binding Path=ArchiveViewModel.GetArchiveDataCommand, Mode=OneWay}"
                 Content="GetArchiveData" />
-            <StackPanel Grid.Column="1">
+
+            <StackPanel Grid.Row="1" Grid.Column="1">
                 <StackPanel Orientation="Horizontal">
                     <TextBox MinWidth="40" Margin="0,0,8,0">
                         <TextBox.Text>
@@ -72,6 +101,7 @@
             </StackPanel>
 
             <Button
+                Grid.Row="1"
                 Grid.Column="2"
                 Width="150"
                 Height="18"
@@ -80,11 +110,11 @@
                 Command="{Binding Path=InverterViewModel.GetRealtimeDataCommand, Mode=OneWay}"
                 Content="GetInverterRealtimeData" />
 
-            <StackPanel Grid.Column="3">
+            <StackPanel Grid.Row="1" Grid.Column="3">
 
-                <TextBlock></TextBlock>
-                <Separator></Separator>
-                
+                <TextBlock />
+                <Separator />
+
                 <StackPanel Orientation="Horizontal">
                     <TextBlock MinWidth="120">Energy Day</TextBlock>
                     <TextBlock MinWidth="110">
@@ -109,7 +139,7 @@
                     </TextBlock>
                 </StackPanel>
 
-                <Separator></Separator>
+                <Separator />
 
                 <StackPanel Orientation="Horizontal">
                     <TextBlock MinWidth="120">Power AC</TextBlock>
@@ -156,6 +186,7 @@
             </StackPanel>
 
             <Button
+                Grid.Row="1"
                 Grid.Column="4"
                 Width="150"
                 Height="18"
@@ -164,7 +195,7 @@
                 Command="{Binding Path=SmartMeterViewModel.GetRealtimeDataCommand, Mode=OneWay}"
                 Content="GetMeterRealtimeData" />
 
-            <StackPanel Grid.Column="5">
+            <StackPanel Grid.Row="1" Grid.Column="5">
 
                 <StackPanel Orientation="Horizontal">
                     <TextBlock MinWidth="120">Model</TextBlock>
@@ -231,7 +262,7 @@
 
             </StackPanel>
 
-            <StackPanel Grid.Column="6">
+            <StackPanel Grid.Row="1" Grid.Column="6">
 
                 <TextBlock />
                 <Separator />
@@ -289,7 +320,6 @@
                 <Separator />
 
             </StackPanel>
-
         </Grid>
 
         <oxy:PlotView Model="{Binding PlotModel}" />

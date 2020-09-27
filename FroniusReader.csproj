@@ -55,11 +55,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DataTypes\ApiVersion.cs" />
     <Compile Include="DataTypes\ValueAndUnit.cs" />
     <Compile Include="DataTypes\Details.cs" />
     <Compile Include="DataTypes\InverterRealTimeData.cs" />
     <Compile Include="Helper\DoubleDivisionConverter.cs" />
     <Compile Include="Helper\FroniusDateTimeConverter.cs" />
+    <Compile Include="Helper\SubmitTextBox.cs" />
+    <Compile Include="Model\NotFoundResponse.cs" />
     <Compile Include="ViewModel\ArchiveViewModel.cs" />
     <Compile Include="Model\FroniusModel.cs" />
     <Compile Include="Model\IFroniusModel.cs" />

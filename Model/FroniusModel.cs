@@ -6,7 +6,6 @@ namespace FroniusReader.Model
     using OxyPlot;
     using OxyPlot.Axes;
     using System.Collections.Generic;
-    using System.Windows.Input;
     using FroniusReader.Helper;
     using System;
     using System.Threading.Tasks;
@@ -42,7 +41,9 @@ namespace FroniusReader.Model
 
         #region Fields
 
-        private readonly RestClient _restClient;
+        private RestClient _restClient;
+        private string _address;
+        private IRestResponse _notFoundResponse = new NotFoundResponse();
 
         #endregion
 
@@ -50,18 +51,60 @@ namespace FroniusReader.Model
 
         public FroniusModel()
         {
-            _restClient = new RestClient("http://fronius.fritz.box/solar_api/v1");
+        }
+
+        #endregion
+
+        #region Public Properties
+
+        public string Address
+        {
+            get
+            {
+                return _address;
+            }
         }
 
         #endregion
 
         #region Public Methods
 
+        public ApiVersion Connect(string address)
+        {
+            string url = "http://" + address + "/solar_api/";
+            RestClient restClient = new RestClient(url);
+            
+            ApiVersion apiVersion = null;
+            try
+            {
+                apiVersion = GetApiVersion(restClient);
+            }
+            catch(Exception ex)
+            {
+                // did not work
+                ;
+            }
+
+            if (apiVersion != null)
+            {
+                string versionedUrl = "http://" + address + apiVersion.BaseURL;
+                _restClient = new RestClient(versionedUrl);
+                _address = address;
+            }
+            else
+            {
+                _restClient = null;
+                // error address can not be used.
+            }
+
+            return apiVersion;
+        }
+
         public async Task<SmartMeterRealTimeData> GetSmartMeterRealtimeDataAsync()
         {
             SmartMeterRealTimeData realTimeData;
 
-            IRestResponse response = await GetRestApiAsync("GetMeterRealtimeData.cgi?Scope=System");
+            IRestResponse response = await GetRestApiAsync(_restClient, "GetMeterRealtimeData.cgi?Scope=System");
             JObject parsedObject = JObject.Parse(response.Content);
             JToken data = parsedObject.SelectToken("Body.Data.0");
             if (data != null)
@@ -80,7 +123,7 @@ namespace FroniusReader.Model
         {
             InverterRealTimeData realTimeData;
 
-            IRestResponse response = await GetRestApiAsync("GetInverterRealtimeData.cgi?Scope=Device&DeviceId=1&DataCollection=CommonInverterData");
+            IRestResponse response = await GetRestApiAsync(_restClient, "GetInverterRealtimeData.cgi?Scope=Device&DeviceId=1&DataCollection=CommonInverterData");
             JObject parsedObject = JObject.Parse(response.Content);
             JToken data = parsedObject.SelectToken("Body.Data");
             if (data != null)
@@ -157,7 +200,7 @@ namespace FroniusReader.Model
                 restString += "&Channel=" + CHANNEL_POWER_REAL_PAC_SUM;
             }
 
-            IRestResponse response = await GetRestApiAsync(restString);
+            IRestResponse response = await GetRestApiAsync(_restClient, restString);
             JObject parsedObject = JObject.Parse(response.Content);
             JToken data = parsedObject.SelectToken("Body.Data.inverter/1.Data");
             if (data != null)
@@ -228,16 +271,40 @@ namespace FroniusReader.Model
 
         #region Private Methods
 
-        private Task<IRestResponse> GetRestApiAsync(string restCall)
+        private ApiVersion GetApiVersion(RestClient restClient)
+        {
+            ApiVersion apiVersion;
+            IRestResponse response = GetRestApiAsync(restClient, "GetAPIVersion.cgi").Result;
+            if (response.ErrorMessage == null)
+            {
+                JObject parsedObject = JObject.Parse(response.Content);
+                apiVersion = parsedObject.ToObject<ApiVersion>();
+            }
+            else
+            {
+                apiVersion = null;
+            }
+
+            return apiVersion;
+        }
+
+        private Task<IRestResponse> GetRestApiAsync(RestClient restClient, string restCall)
         {
             Task<IRestResponse> task = new Task<IRestResponse>(() =>
             {
-                RestRequest request = new RestRequest(restCall, Method.GET);
-                request.RequestFormat = DataFormat.Json;
-                request.OnBeforeDeserialization = resp => { resp.ContentType = "application/json"; };
+                if (restClient != null)
+                {
+                    RestRequest request = new RestRequest(restCall, Method.GET);
+                    request.RequestFormat = DataFormat.Json;
+                    request.OnBeforeDeserialization = resp => { resp.ContentType = "application/json"; };
 
-                IRestResponse response = _restClient.Execute(request);
-                return response;
+                    IRestResponse response = restClient.Execute(request);
+                    return response;
+                }
+                else
+                {
+                    return _notFoundResponse;
+                }
             });
 
             task.Start(TaskScheduler.Default);
