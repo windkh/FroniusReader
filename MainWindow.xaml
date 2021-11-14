@@ -7,7 +7,7 @@
     xmlns:local="clr-namespace:FroniusReader"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:oxy="http://oxyplot.org/wpf"
-    Title="Fronius Reader"
+    Title="Fronius Reader 0.1"
     Width="1024"
     Height="800"
     mc:Ignorable="d">
