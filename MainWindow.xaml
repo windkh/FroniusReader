@@ -8,8 +8,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:oxy="http://oxyplot.org/wpf"
     Title="Fronius Reader 0.1"
-    Width="1024"
-    Height="800"
+    Width="1600"
+    Height="1200"
     mc:Ignorable="d">
 
     <Window.Resources>
@@ -150,6 +150,14 @@
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal">
+                    <TextBlock MinWidth="120">Frequency AC</TextBlock>
+                    <TextBlock MinWidth="110">
+                        <Run Text="{Binding Path=InverterViewModel.RealTimeData.FAC.Value, Mode=OneWay}" />
+                        <Run Text="{Binding Path=InverterViewModel.RealTimeData.FAC.Unit, Mode=OneWay}" />
+                    </TextBlock>
+                </StackPanel>
+                
+                <StackPanel Orientation="Horizontal">
                     <TextBlock MinWidth="120">Current AC</TextBlock>
                     <TextBlock MinWidth="110">
                         <Run Text="{Binding Path=InverterViewModel.RealTimeData.IAC.Value, Mode=OneWay}" />
@@ -206,6 +214,16 @@
                     </TextBlock>
                 </StackPanel>
 
+                <Separator />
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock MinWidth="120">Frequency AC Avg</TextBlock>
+                    <TextBlock MinWidth="110">
+                        <Run Text="{Binding Path=SmartMeterViewModel.RealTimeData.FrequencyPhaseAverage, Mode=OneWay}" />
+                        <Run Text="Hz" />
+                    </TextBlock>
+                </StackPanel>
+                
                 <Separator />
 
                 <StackPanel Orientation="Horizontal">
@@ -266,6 +284,17 @@
 
                 <TextBlock />
                 <Separator />
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock MinWidth="120">Power Apparent Sum</TextBlock>
+                    <TextBlock MinWidth="110">
+                        <Run Text="{Binding Path=SmartMeterViewModel.RealTimeData.PowerApparentSSum, Mode=OneWay}" />
+                        <Run Text="W" />
+                    </TextBlock>
+                </StackPanel>
+                
+                <Separator />
+
 
                 <StackPanel Orientation="Horizontal">
                     <TextBlock MinWidth="120">Current AC L1</TextBlock>

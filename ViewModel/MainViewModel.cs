@@ -17,7 +17,7 @@ namespace FroniusReader.ViewModel
     {
         #region Constante
 
-        private const int TIMER_SECONDS = 30;
+        private const int TIMER_SECONDS = 20;
 
         #endregion
 
