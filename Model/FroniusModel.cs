@@ -6,10 +6,10 @@ namespace FroniusReader.Model
     using OxyPlot;
     using OxyPlot.Axes;
     using System.Collections.Generic;
-    using FroniusReader.Helper;
+    using Helper;
     using System;
     using System.Threading.Tasks;
-    using FroniusReader.DataTypes;
+    using DataTypes;
     using Newtonsoft.Json.Linq;
     using RestSharp;
 
@@ -43,7 +43,7 @@ namespace FroniusReader.Model
 
         private RestClient _restClient;
         private string _address;
-        private IRestResponse _notFoundResponse = new NotFoundResponse();
+        private readonly IRestResponse _notFoundResponse = new NotFoundResponse();
 
         #endregion
 
@@ -79,10 +79,9 @@ namespace FroniusReader.Model
             {
                 apiVersion = GetApiVersion(restClient);
             }
-            catch(Exception ex)
+            catch (Exception)
             {
                 // did not work
-                ;
             }
 
             if (apiVersion != null)
@@ -275,7 +274,7 @@ namespace FroniusReader.Model
         {
             ApiVersion apiVersion;
             IRestResponse response = GetRestApiAsync(restClient, "GetAPIVersion.cgi").Result;
-            if (response.ErrorMessage == null)
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 JObject parsedObject = JObject.Parse(response.Content);
                 apiVersion = parsedObject.ToObject<ApiVersion>();
@@ -294,9 +293,11 @@ namespace FroniusReader.Model
             {
                 if (restClient != null)
                 {
-                    RestRequest request = new RestRequest(restCall, Method.GET);
-                    request.RequestFormat = DataFormat.Json;
-                    request.OnBeforeDeserialization = resp => { resp.ContentType = "application/json"; };
+                    RestRequest request = new RestRequest(restCall, Method.GET)
+                    {
+                        RequestFormat = DataFormat.Json,
+                        OnBeforeDeserialization = resp => { resp.ContentType = "application/json"; }
+                    };
 
                     IRestResponse response = restClient.Execute(request);
                     return response;

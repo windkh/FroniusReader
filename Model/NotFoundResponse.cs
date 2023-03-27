@@ -85,9 +85,8 @@ namespace FroniusReader.Model
 
 #pragma warning disable CS0618 // Type or member is obsolete
         public IList<RestResponseCookie> Cookies => null;
-#pragma warning restore CS0618 // Type or member is obsolete
-
         public IList<Parameter> Headers => null;
+#pragma warning restore CS0618 // Type or member is obsolete
 
         public ResponseStatus ResponseStatus 
         {
