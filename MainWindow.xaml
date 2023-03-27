@@ -7,7 +7,7 @@
     xmlns:local="clr-namespace:FroniusReader"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:oxy="http://oxyplot.org/wpf"
-    Title="Fronius Reader 0.1"
+    Title="Fronius Reader 0.2"
     Width="1600"
     Height="1200"
     mc:Ignorable="d">
@@ -16,8 +16,7 @@
         <helper:DoubleDivisionConverter x:Key="DoubleDivisionConverter" />
     </Window.Resources>
 
-    <DockPanel LastChildFill="True"
-               Margin="8">
+    <DockPanel Margin="8" LastChildFill="True">
         <Grid DockPanel.Dock="Top">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -39,21 +38,20 @@
                 Grid.Column="0"
                 Grid.ColumnSpan="8"
                 Orientation="Vertical">
-                <StackPanel
-                    Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal">
                     <TextBlock Text="Fronius IP or URL: " />
                     <helper:SubmitTextBox MinWidth="200" Text="{Binding Path=Address, Mode=TwoWay, UpdateSourceTrigger=Explicit}" />
 
                     <TextBlock>
-                        <Run Text="   ApiVersion: "></Run>
+                        <Run Text="   ApiVersion: " />
                         <Run Text="{Binding Path=ApiVersion.APIVersion, Mode=OneWay}" />
-                        <Run Text="   BaseURL: "></Run>
+                        <Run Text="   BaseURL: " />
                         <Run Text="{Binding Path=ApiVersion.BaseURL, Mode=OneWay}" />
-                        <Run Text="   CompatibilityRange: "></Run>
+                        <Run Text="   CompatibilityRange: " />
                         <Run Text="{Binding Path=ApiVersion.CompatibilityRange, Mode=OneWay}" />
                     </TextBlock>
                 </StackPanel>
-                <Separator/>
+                <Separator />
             </StackPanel>
 
             <Button
@@ -156,7 +154,7 @@
                         <Run Text="{Binding Path=InverterViewModel.RealTimeData.FAC.Unit, Mode=OneWay}" />
                     </TextBlock>
                 </StackPanel>
-                
+
                 <StackPanel Orientation="Horizontal">
                     <TextBlock MinWidth="120">Current AC</TextBlock>
                     <TextBlock MinWidth="110">
@@ -223,7 +221,7 @@
                         <Run Text="Hz" />
                     </TextBlock>
                 </StackPanel>
-                
+
                 <Separator />
 
                 <StackPanel Orientation="Horizontal">
@@ -292,7 +290,7 @@
                         <Run Text="W" />
                     </TextBlock>
                 </StackPanel>
-                
+
                 <Separator />
 
 

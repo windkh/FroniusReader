@@ -101,18 +101,17 @@ namespace FroniusReader.Model
 
         public async Task<SmartMeterRealTimeData> GetSmartMeterRealtimeDataAsync()
         {
-            SmartMeterRealTimeData realTimeData;
+            SmartMeterRealTimeData realTimeData = null;
 
             IRestResponse response = await GetRestApiAsync(_restClient, "GetMeterRealtimeData.cgi?Scope=System");
-            JObject parsedObject = JObject.Parse(response.Content);
-            JToken data = parsedObject.SelectToken("Body.Data.0");
-            if (data != null)
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                realTimeData = data.ToObject<SmartMeterRealTimeData>();
-            }
-            else
-            {
-                realTimeData = null;
+                JObject parsedObject = JObject.Parse(response.Content);
+                JToken data = parsedObject.SelectToken("Body.Data.0");
+                if (data != null)
+                {
+                    realTimeData = data.ToObject<SmartMeterRealTimeData>();
+                }
             }
 
             return realTimeData;
@@ -120,18 +119,17 @@ namespace FroniusReader.Model
 
         public async Task<InverterRealTimeData> GetInverterRealtimeDataAsync()
         {
-            InverterRealTimeData realTimeData;
+            InverterRealTimeData realTimeData = null;
 
             IRestResponse response = await GetRestApiAsync(_restClient, "GetInverterRealtimeData.cgi?Scope=Device&DeviceId=1&DataCollection=CommonInverterData");
-            JObject parsedObject = JObject.Parse(response.Content);
-            JToken data = parsedObject.SelectToken("Body.Data");
-            if (data != null)
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                realTimeData = data.ToObject<InverterRealTimeData>();
-            }
-            else
-            {
-                realTimeData = null;
+                JObject parsedObject = JObject.Parse(response.Content);
+                JToken data = parsedObject.SelectToken("Body.Data");
+                if (data != null)
+                {
+                    realTimeData = data.ToObject<InverterRealTimeData>();
+                }
             }
 
             return realTimeData;
@@ -152,7 +150,7 @@ namespace FroniusReader.Model
             bool getChannelPowerRealSum
             )
         {
-            ArchiveData archiveData;
+            ArchiveData archiveData = null;
 
             string startDateString = FroniusDateTimeConverter.ToFroniusDateTimeString(startDate);
             string endDateString = FroniusDateTimeConverter.ToFroniusDateTimeString(endDate);
@@ -200,67 +198,68 @@ namespace FroniusReader.Model
             }
 
             IRestResponse response = await GetRestApiAsync(_restClient, restString);
-            JObject parsedObject = JObject.Parse(response.Content);
-            JToken data = parsedObject.SelectToken("Body.Data.inverter/1.Data");
-            if (data != null)
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                List<Channel> channels = new List<Channel>();
-
-                if (getChannelCurrentDCString1)
+                JObject parsedObject = JObject.Parse(response.Content);
+                JToken data = parsedObject.SelectToken("Body.Data.inverter/1.Data");
+                if (data != null)
                 {
-                    TryAddChannel(CHANNEL_DC_CURRENT_1, data, channels, startDate);
-                }
+                    List<Channel> channels = new List<Channel>();
 
-                if (getChannelCurrentDCString2)
-                {
-                    TryAddChannel(CHANNEL_DC_CURRENT_2, data, channels, startDate);
-                }
+                    if (getChannelCurrentDCString1)
+                    {
+                        TryAddChannel(CHANNEL_DC_CURRENT_1, data, channels, startDate);
+                    }
 
-                if (getChannelVoltageDCString1)
-                {
-                    TryAddChannel(CHANNEL_DC_VOLTAGE_1, data, channels, startDate);
-                }
+                    if (getChannelCurrentDCString2)
+                    {
+                        TryAddChannel(CHANNEL_DC_CURRENT_2, data, channels, startDate);
+                    }
 
-                if (getChannelVoltageDCString2)
-                {
-                    TryAddChannel(CHANNEL_DC_VOLTAGE_2, data, channels, startDate);
-                }
+                    if (getChannelVoltageDCString1)
+                    {
+                        TryAddChannel(CHANNEL_DC_VOLTAGE_1, data, channels, startDate);
+                    }
 
-                if (getChannelEnergyRealWACSumProduced)
-                {
-                    TryAddChannel(CHANNEL_ENERGY_PRODUCED, data, channels, startDate);
-                }
+                    if (getChannelVoltageDCString2)
+                    {
+                        TryAddChannel(CHANNEL_DC_VOLTAGE_2, data, channels, startDate);
+                    }
 
-                if (getChannelEnergyRealWACSumConsumed)
-                {
-                    TryAddChannel(CHANNEL_ENERGY_CONSUMED, data, channels, startDate);
-                }
+                    if (getChannelEnergyRealWACSumProduced)
+                    {
+                        TryAddChannel(CHANNEL_ENERGY_PRODUCED, data, channels, startDate);
+                    }
 
-                if (getChannelTemperaturePowerstage)
-                {
-                    TryAddChannel(CHANNEL_TEMPERATURE_POWERSTAGE, data, channels, startDate);
-                }
+                    if (getChannelEnergyRealWACSumConsumed)
+                    {
+                        TryAddChannel(CHANNEL_ENERGY_CONSUMED, data, channels, startDate);
+                    }
 
-                if (getChannelPowerRealSum)
-                {
-                    TryAddChannel(CHANNEL_POWER_REAL_PAC_SUM, data, channels, startDate);
-                }
+                    if (getChannelTemperaturePowerstage)
+                    {
+                        TryAddChannel(CHANNEL_TEMPERATURE_POWERSTAGE, data, channels, startDate);
+                    }
 
-                if (getChannelPowerDCString1)
-                {
-                    TryAddChannel(CHANNEL_DC_VOLTAGE_1, CHANNEL_DC_CURRENT_1, CHANNEL_DC_POWER_1, "W", data, channels, startDate);
-                }
+                    if (getChannelPowerRealSum)
+                    {
+                        TryAddChannel(CHANNEL_POWER_REAL_PAC_SUM, data, channels, startDate);
+                    }
 
-                if (getChannelPowerDCString2)
-                {
-                    TryAddChannel(CHANNEL_DC_VOLTAGE_2, CHANNEL_DC_CURRENT_2, CHANNEL_DC_POWER_2, "W", data, channels, startDate);
-                }
+                    if (getChannelPowerDCString1)
+                    {
+                        TryAddChannel(CHANNEL_DC_VOLTAGE_1, CHANNEL_DC_CURRENT_1, CHANNEL_DC_POWER_1, "W", data,
+                            channels, startDate);
+                    }
 
-                archiveData = new ArchiveData(channels);
-            }
-            else
-            {
-                archiveData = null;
+                    if (getChannelPowerDCString2)
+                    {
+                        TryAddChannel(CHANNEL_DC_VOLTAGE_2, CHANNEL_DC_CURRENT_2, CHANNEL_DC_POWER_2, "W", data,
+                            channels, startDate);
+                    }
+
+                    archiveData = new ArchiveData(channels);
+                }
             }
 
             return archiveData;
@@ -272,16 +271,12 @@ namespace FroniusReader.Model
 
         private ApiVersion GetApiVersion(RestClient restClient)
         {
-            ApiVersion apiVersion;
+            ApiVersion apiVersion = null;
             IRestResponse response = GetRestApiAsync(restClient, "GetAPIVersion.cgi").Result;
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 JObject parsedObject = JObject.Parse(response.Content);
                 apiVersion = parsedObject.ToObject<ApiVersion>();
-            }
-            else
-            {
-                apiVersion = null;
             }
 
             return apiVersion;
@@ -291,6 +286,7 @@ namespace FroniusReader.Model
         {
             Task<IRestResponse> task = new Task<IRestResponse>(() =>
             {
+                IRestResponse response;
                 if (restClient != null)
                 {
                     RestRequest request = new RestRequest(restCall, Method.GET)
@@ -299,13 +295,14 @@ namespace FroniusReader.Model
                         OnBeforeDeserialization = resp => { resp.ContentType = "application/json"; }
                     };
 
-                    IRestResponse response = restClient.Execute(request);
-                    return response;
+                    response = restClient.Execute(request);
                 }
                 else
                 {
-                    return _notFoundResponse;
+                    response = _notFoundResponse;
                 }
+
+                return response;
             });
 
             task.Start(TaskScheduler.Default);
